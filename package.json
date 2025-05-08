@@ -1,0 +1,37 @@
+{
+  "name": "book-manager-node-webservice-02",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "start": "node ./src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Oleksandr-Kostiuchenko/book-manager-node-webservice-02.git"
+  },
+  "keywords": [],
+  "author": "Oleksandr Kostiuchenko <aleksandrkostucenko11@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Oleksandr-Kostiuchenko/book-manager-node-webservice-02/issues"
+  },
+  "homepage": "https://github.com/Oleksandr-Kostiuchenko/book-manager-node-webservice-02#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.14.1",
+    "nodemon": "^3.1.10",
+    "pino-http": "^10.4.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "eslint": "^9.26.0",
+    "globals": "^16.1.0",
+    "pino-pretty": "^13.0.0"
+  }
+}
