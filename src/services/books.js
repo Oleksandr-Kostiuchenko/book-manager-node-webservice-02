@@ -12,3 +12,32 @@ export const getBookById = async (bookId) => {
 
   return book;
 };
+
+export const createBook = async (payload) => {
+  const book = await BooksCollection.create(payload);
+
+  return book;
+};
+
+export const deleteBook = async (bookId) => {
+  const book = await BooksCollection.findOneAndDelete({
+    _id: bookId,
+  });
+
+  return book;
+};
+
+export const putBook = async (bookId, payload, options) => {
+  const result = await BooksCollection.findOneAndUpdate(
+    { _id: bookId },
+    payload,
+    { new: true, includeResultMetadata: true, ...options },
+  );
+
+  if (!result || !result.value) return null;
+
+  return {
+    book: result.value,
+    isNew: Boolean(result?.lastErrorObject?.upserted),
+  };
+};

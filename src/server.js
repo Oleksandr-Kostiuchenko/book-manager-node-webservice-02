@@ -6,8 +6,12 @@ import cors from 'cors';
 //* Utils
 import { getEnvVar } from './utils/getEnvVar.js';
 
-//*Services
-import { getAllBooks, getBookById } from './services/books.js';
+//* Middlewares
+import { errorHandler } from './middlewares/errorHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
+
+//* Routers
+import booksRouter from './routers/booksRouter.js';
 
 export const startServer = () => {
   const app = express();
@@ -36,35 +40,11 @@ export const startServer = () => {
   });
 
   // Get books
-  app.get('/books', async (req, res) => {
-    const books = await getAllBooks();
-
-    res.status(200).json({
-      data: books,
-    });
-  });
-  app.get('/books/:bookId', async (req, res) => {
-    const { bookId } = req.params;
-    const book = await getBookById(bookId);
-
-    res.status(200).json({
-      data: [book],
-    });
-  });
+  app.use('/books', booksRouter);
 
   // Error middlewares
-  app.use((req, res, next) => {
-    res.status(404).json({
-      error: '404',
-      message: 'This path isnt found!',
-    });
-  });
-  app.use((err, req, res, next) => {
-    res.status(500).json({
-      error: '500',
-      message: 'Sorry! Smth went wrong',
-    });
-  });
+  app.use(notFoundHandler);
+  app.use(errorHandler);
 
   // PORT listener
   app.listen(PORT, () => {
