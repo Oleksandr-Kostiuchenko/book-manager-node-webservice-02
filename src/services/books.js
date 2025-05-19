@@ -1,10 +1,22 @@
 import { BooksCollection } from '../db/models/book.js';
+import { calculatePaginationData } from '../middlewares/calculatePaginationData.js';
 
-export const getAllBooks = async () => {
-  const books = await BooksCollection.find();
-  console.log(books);
+export const getAllBooks = async ({ page, perPage }) => {
+  const limit = perPage;
+  const skip = (page - 1) * perPage;
 
-  return books;
+  const booksQuery = BooksCollection.find();
+  const booksCount = await BooksCollection.find()
+    .merge(booksQuery)
+    .countDocuments();
+
+  const books = await booksQuery.skip(skip).limit(limit).exec();
+  const paginationData = calculatePaginationData(booksCount, page, perPage);
+
+  return {
+    data: books,
+    ...paginationData,
+  };
 };
 
 export const getBookById = async (bookId) => {

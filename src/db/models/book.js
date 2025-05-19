@@ -36,6 +36,7 @@ const booksSchema = new Schema(
         'Children',
         'Graphic Novel',
         'Classic',
+        'Motivation',
       ],
     },
     isRead: {

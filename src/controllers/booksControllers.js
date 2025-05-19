@@ -7,12 +7,19 @@ import {
   putBook,
 } from '../services/books.js';
 
+//* Pagination
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+
 //* Http-errors
 import createHttpError from 'http-errors';
 
 //  GET
 export const getBooksController = async (req, res, next) => {
-  const books = await getAllBooks();
+  const { page, perPage } = parsePaginationParams(req.query);
+  const books = await getAllBooks({
+    page,
+    perPage,
+  });
 
   if (!books) {
     throw createHttpError(404, 'Books not found!');
