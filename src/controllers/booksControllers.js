@@ -9,6 +9,8 @@ import {
 
 //* Pagination
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 //* Http-errors
 import createHttpError from 'http-errors';
@@ -16,9 +18,15 @@ import createHttpError from 'http-errors';
 //  GET
 export const getBooksController = async (req, res, next) => {
   const { page, perPage } = parsePaginationParams(req.query);
+  const { sortOrder, sortBy } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
+
   const books = await getAllBooks({
     page,
     perPage,
+    sortOrder,
+    sortBy,
+    filter,
   });
 
   if (!books) {
