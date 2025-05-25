@@ -2,6 +2,7 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 //* Utils
 import { getEnvVar } from './utils/getEnvVar.js';
@@ -11,7 +12,7 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 //* Routers
-import booksRouter from './routers/booksRouter.js';
+import router from './routers/index.js';
 
 export const startServer = () => {
   const app = express();
@@ -20,6 +21,7 @@ export const startServer = () => {
   // Lib middlewares
   app.use(express.json());
   app.use(cors());
+  app.use(cookieParser());
   app.use(
     pino({
       transport: {
@@ -39,8 +41,8 @@ export const startServer = () => {
     });
   });
 
-  // Get books
-  app.use('/books', booksRouter);
+  // BOOKS + AUTH
+  app.use(router);
 
   // Error middlewares
   app.use(notFoundHandler);
