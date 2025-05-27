@@ -9,7 +9,11 @@ import { registerUserSchema, loginUserSchema } from '../validation/auth.js';
 import {
   loginUserController,
   registerUserController,
+  logoutUserController,
+  refreshUserSessionController,
 } from '../controllers/authControllers.js';
+
+//* Middlewares
 import { validateBody } from '../middlewares/validateBody.js';
 
 //* Init Router
@@ -28,5 +32,11 @@ router.post(
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
 );
+
+//* LOGOUT
+router.post('/logout', ctrlWrapper(logoutUserController));
+
+//* REFRESH
+router.post('/refresh', ctrlWrapper(refreshUserSessionController));
 
 export default router;

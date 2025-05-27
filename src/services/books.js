@@ -1,3 +1,6 @@
+//* CONSTANTS
+import { ROLES } from '../constants/index.js';
+
 //* Pagination & Sorting & Filtering
 import { BooksCollection } from '../db/models/book.js';
 import { calculatePaginationData } from '../middlewares/calculatePaginationData.js';
@@ -9,12 +12,25 @@ export const getAllBooks = async ({
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   filter = {},
+  user,
 }) => {
+  const { _id, role } = user;
+
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const booksQuery = BooksCollection.find();
+  let booksQuery;
+  if (role === ROLES.USER) {
+    booksQuery = BooksCollection.find({
+      $or: [{ userId: _id }, { userId: { $exists: false } }],
+    });
+  } else if (role === ROLES.ADMIN) {
+    booksQuery = BooksCollection.find();
+  }
 
+  if (filter.myBooks) {
+    booksQuery.where('userId').equals(_id);
+  }
   if (filter.author) {
     booksQuery.where('author').equals(filter.author);
   }
@@ -48,8 +64,19 @@ export const getAllBooks = async ({
   };
 };
 
-export const getBookById = async (bookId) => {
-  const book = await BooksCollection.findById(bookId);
+export const getBookById = async ({ bookId, user }) => {
+  const { _id, role } = user;
+
+  let book;
+
+  if (role === ROLES.USER) {
+    book = await BooksCollection.findOne({
+      _id: bookId,
+      userId: _id,
+    });
+  } else if (role === ROLES.ADMIN) {
+    book = await BooksCollection.findById(bookId);
+  }
 
   return book;
 };
@@ -60,20 +87,47 @@ export const createBook = async (payload) => {
   return book;
 };
 
-export const deleteBook = async (bookId) => {
-  const book = await BooksCollection.findOneAndDelete({
-    _id: bookId,
-  });
+export const deleteBook = async ({ bookId, user }) => {
+  const { _id, role } = user;
+
+  let book;
+
+  if (role === ROLES.USER) {
+    book = await BooksCollection.findOneAndDelete({
+      _id: bookId,
+      userId: _id,
+    });
+  } else if (role === ROLES.ADMIN) {
+    book = await BooksCollection.findOneAndDelete({
+      _id: bookId,
+    });
+  }
 
   return book;
 };
 
-export const putBook = async (bookId, payload, options) => {
-  const result = await BooksCollection.findOneAndUpdate(
-    { _id: bookId },
-    payload,
-    { new: true, includeResultMetadata: true, ...options },
-  );
+export const putBook = async ({ bookId, payload, options, user }) => {
+  const { _id, role } = user;
+
+  let result;
+
+  if (role === ROLES.USER) {
+    result = await BooksCollection.findOneAndUpdate(
+      { _id: bookId, userId: _id },
+      payload,
+      {
+        new: true,
+        includeResultMetadata: true,
+        ...options,
+      },
+    );
+  } else if (role === ROLES.ADMIN) {
+    result = await BooksCollection.findOneAndUpdate({ _id: bookId }, payload, {
+      new: true,
+      includeResultMetadata: true,
+      ...options,
+    });
+  }
 
   if (!result || !result.value) return null;
 

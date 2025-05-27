@@ -14,6 +14,9 @@ import {
 //* Utils
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
+//* Middlewares
+import { authenticate } from '../middlewares/authenticate.js';
+
 //* Validation
 import { validateBody } from '../middlewares/validateBody.js';
 import { isValidId } from '../middlewares/isValidId.js';
@@ -21,6 +24,9 @@ import { createBookSchema, updateBookSchema } from '../validation/books.js';
 
 //* Init Router
 const router = express.Router();
+
+//* AUTH
+router.use(authenticate);
 
 //* GET
 router.get('/', ctrlWrapper(getBooksController));

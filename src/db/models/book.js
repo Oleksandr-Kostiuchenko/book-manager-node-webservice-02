@@ -43,6 +43,10 @@ const booksSchema = new Schema(
       type: Boolean,
       required: true,
     },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'users',
+    },
   },
   {
     timestamps: true,

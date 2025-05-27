@@ -1,3 +1,6 @@
+//* Constants
+import { ROLES } from '../../constants/index.js';
+
 //* Mongoose
 import mongoose from 'mongoose';
 import { Schema, model } from 'mongoose';
@@ -16,6 +19,11 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: true,
+    },
+    role: {
+      type: String,
+      enum: [ROLES.USER, ROLES.ADMIN],
+      default: ROLES.USER,
     },
   },
   {

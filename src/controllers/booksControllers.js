@@ -27,6 +27,7 @@ export const getBooksController = async (req, res, next) => {
     sortOrder,
     sortBy,
     filter,
+    user: req.user,
   });
 
   if (!books) {
@@ -41,7 +42,10 @@ export const getBooksController = async (req, res, next) => {
 };
 export const getBookByIdController = async (req, res, next) => {
   const { bookId } = req.params;
-  const book = await getBookById(bookId);
+  const book = await getBookById({
+    bookId: bookId,
+    user: req.user,
+  });
 
   if (!book) {
     throw createHttpError(404, 'Book not found!');
@@ -56,7 +60,10 @@ export const getBookByIdController = async (req, res, next) => {
 
 //  POST
 export const createBookController = async (req, res, next) => {
-  const book = await createBook(req.body);
+  const book = await createBook({
+    ...req.body,
+    userId: req.user._id,
+  });
 
   res.status(201).json({
     status: 201,
@@ -68,7 +75,7 @@ export const createBookController = async (req, res, next) => {
 //  DELETE
 export const deleteBookController = async (req, res, next) => {
   const { bookId } = req.params;
-  const book = await deleteBook(bookId);
+  const book = await deleteBook({ bookId, user: req.user });
 
   if (!book) {
     throw createHttpError(404, 'Book not found!');
@@ -84,7 +91,12 @@ export const deleteBookController = async (req, res, next) => {
 // PUT
 export const putBookController = async (req, res, next) => {
   const { bookId } = req.params;
-  const result = await putBook(bookId, req.body, { upsert: true });
+  const result = await putBook({
+    bookId,
+    payload: req.body,
+    options: { upsert: true },
+    user: req.user,
+  });
 
   const status = result.isNew ? 201 : 200;
   res.status(status).json({
@@ -97,7 +109,7 @@ export const putBookController = async (req, res, next) => {
 // PATCH
 export const patchBookController = async (req, res, next) => {
   const { bookId } = req.params;
-  const result = await putBook(bookId, req.body);
+  const result = await putBook({ bookId, payload: req.body, user: req.user });
 
   if (!result) {
     throw createHttpError(404, 'Book not found!');

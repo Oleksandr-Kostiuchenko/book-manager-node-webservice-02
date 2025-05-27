@@ -1,5 +1,6 @@
 //* Joi
 import Joi from 'joi';
+import { isValidObjectId } from 'mongoose';
 
 export const createBookSchema = Joi.object({
   title: Joi.string().min(3).max(25).required().messages({
@@ -33,6 +34,12 @@ export const createBookSchema = Joi.object({
     )
     .required(),
   isRead: Joi.boolean().required(),
+  userId: Joi.string().custom((value, helper) => {
+    if (value && !isValidObjectId(value)) {
+      return helper.message('User id should be valid Mongo ID');
+    }
+    return true;
+  }),
 });
 
 export const updateBookSchema = Joi.object({
