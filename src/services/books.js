@@ -106,7 +106,7 @@ export const deleteBook = async ({ bookId, user }) => {
   return book;
 };
 
-export const putBook = async ({ bookId, payload, options, user }) => {
+export const putBook = async ({ bookId, payload, options, user, photo }) => {
   const { _id, role } = user;
 
   let result;
@@ -114,7 +114,7 @@ export const putBook = async ({ bookId, payload, options, user }) => {
   if (role === ROLES.USER) {
     result = await BooksCollection.findOneAndUpdate(
       { _id: bookId, userId: _id },
-      payload,
+      { ...payload, photo: photo },
       {
         new: true,
         includeResultMetadata: true,
@@ -122,11 +122,15 @@ export const putBook = async ({ bookId, payload, options, user }) => {
       },
     );
   } else if (role === ROLES.ADMIN) {
-    result = await BooksCollection.findOneAndUpdate({ _id: bookId }, payload, {
-      new: true,
-      includeResultMetadata: true,
-      ...options,
-    });
+    result = await BooksCollection.findOneAndUpdate(
+      { _id: bookId },
+      { ...payload, photo: photo },
+      {
+        new: true,
+        includeResultMetadata: true,
+        ...options,
+      },
+    );
   }
 
   if (!result || !result.value) return null;

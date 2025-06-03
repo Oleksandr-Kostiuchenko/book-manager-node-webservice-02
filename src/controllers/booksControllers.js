@@ -7,6 +7,10 @@ import {
   putBook,
 } from '../services/books.js';
 
+//* Utils
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+
 //* Pagination
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
@@ -14,6 +18,7 @@ import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 //* Http-errors
 import createHttpError from 'http-errors';
+import { getEnvVar } from '../utils/getEnvVar.js';
 
 //  GET
 export const getBooksController = async (req, res, next) => {
@@ -60,9 +65,17 @@ export const getBookByIdController = async (req, res, next) => {
 
 //  POST
 export const createBookController = async (req, res, next) => {
+  const photo = req.photo;
+
+  let photoUrl;
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+
   const book = await createBook({
     ...req.body,
     userId: req.user._id,
+    photo: photoUrl,
   });
 
   res.status(201).json({
@@ -109,7 +122,25 @@ export const putBookController = async (req, res, next) => {
 // PATCH
 export const patchBookController = async (req, res, next) => {
   const { bookId } = req.params;
-  const result = await putBook({ bookId, payload: req.body, user: req.user });
+
+  const photo = req.file;
+  let photoUrl;
+  console.log(photo);
+
+  if (photo) {
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const result = await putBook({
+    bookId,
+    payload: req.body,
+    user: req.user,
+    photo: photoUrl,
+  });
 
   if (!result) {
     throw createHttpError(404, 'Book not found!');

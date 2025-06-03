@@ -13,6 +13,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 //* Routers
 import router from './routers/index.js';
+import { UPLOAD_DIR } from './constants/index.js';
 
 export const startServer = () => {
   const app = express();
@@ -40,6 +41,7 @@ export const startServer = () => {
       message: 'Book-manager service',
     });
   });
+  app.use('/uploads', express.static(UPLOAD_DIR));
 
   // BOOKS + AUTH
   app.use(router);

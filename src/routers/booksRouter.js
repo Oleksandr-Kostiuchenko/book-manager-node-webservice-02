@@ -1,6 +1,9 @@
 //* Express
 import express from 'express';
 
+//* Multer
+import { upload } from '../middlewares/multer.js';
+
 //* Controllers
 import {
   getBooksController,
@@ -35,6 +38,7 @@ router.get('/:bookId', isValidId, ctrlWrapper(getBookByIdController));
 //* POST
 router.post(
   '/',
+  upload.single('photo'),
   validateBody(createBookSchema),
   ctrlWrapper(createBookController),
 );
@@ -46,6 +50,7 @@ router.delete('/:bookId', isValidId, ctrlWrapper(deleteBookController));
 router.put(
   '/:bookId',
   isValidId,
+  upload.single('photo'),
   validateBody(updateBookSchema),
   ctrlWrapper(putBookController),
 );
@@ -54,6 +59,7 @@ router.put(
 router.patch(
   '/:bookId',
   isValidId,
+  upload.single('photo'),
   validateBody(updateBookSchema),
   ctrlWrapper(patchBookController),
 );
