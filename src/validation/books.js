@@ -34,6 +34,7 @@ export const createBookSchema = Joi.object({
     )
     .required(),
   isRead: Joi.boolean().required(),
+  photo: Joi.string(),
   userId: Joi.string().custom((value, helper) => {
     if (value && !isValidObjectId(value)) {
       return helper.message('User id should be valid Mongo ID');

@@ -82,6 +82,7 @@ export const getBookById = async ({ bookId, user }) => {
 };
 
 export const createBook = async (payload) => {
+  console.log(payload);
   const book = await BooksCollection.create(payload);
 
   return book;

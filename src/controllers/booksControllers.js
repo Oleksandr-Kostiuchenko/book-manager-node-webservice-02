@@ -65,11 +65,15 @@ export const getBookByIdController = async (req, res, next) => {
 
 //  POST
 export const createBookController = async (req, res, next) => {
-  const photo = req.photo;
+  const photo = req.file;
 
   let photoUrl;
   if (photo) {
-    photoUrl = await saveFileToUploadDir(photo);
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else if (getEnvVar('ENABLE_CLOUDINARY') === 'false') {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
   }
 
   const book = await createBook({
