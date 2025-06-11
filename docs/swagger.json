@@ -1,0 +1,530 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Books app",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "description": "This is a documentation of students app"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    },
+    {
+      "url": "https://example.com/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Students",
+      "description": "Operations about users."
+    },
+    {
+      "name": "Auth",
+      "description": "Auth operations."
+    }
+  ],
+  "paths": {
+    "/books": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "summary": "Get list of Books",
+        "operationId": "getBooks",
+        "description": "Get list of books with this endpoint",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "perPage",
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "type": "string",
+              "example": "name",
+              "description": "All books's fields can be mentioned. Default value - _id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "example": "asc"
+            }
+          },
+          {
+            "in": "query",
+            "name": "author",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "minYear",
+            "schema": {
+              "type": "number",
+              "example": 2000
+            }
+          },
+          {
+            "in": "query",
+            "name": "maxYear",
+            "schema": {
+              "type": "number",
+              "example": 2010
+            }
+          },
+          {
+            "in": "query",
+            "name": "genre",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Fiction",
+                "Non-fiction",
+                "Mystery",
+                "Fantasy",
+                "Science Fiction",
+                "Biography",
+                "Romance",
+                "Historical",
+                "Thriller",
+                "Horror",
+                "Self-help",
+                "Philosophy",
+                "Poetry",
+                "Young Adult",
+                "Children",
+                "Graphic Novel",
+                "Classic",
+                "Motivation"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "isRead",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "myBooks",
+            "schema": {
+              "type": "boolean",
+              "description": "Books created by you"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully found books!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found books!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "page",
+                        "perPage",
+                        "totalItems",
+                        "totalPages",
+                        "hasNextPage",
+                        "hasPreviousPage"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/book"
+                          }
+                        },
+                        "page": {
+                          "type": "number",
+                          "example": 2
+                        },
+                        "perPage": {
+                          "type": "number",
+                          "example": 10
+                        },
+                        "totalItems": {
+                          "type": "number",
+                          "example": 100
+                        },
+                        "totalPages": {
+                          "type": "number",
+                          "example": 10
+                        },
+                        "hasNextPage": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Books"
+        ],
+        "summary": "Create Book",
+        "operationId": "createBook",
+        "description": "Create a book with payload",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "_id",
+                  "title",
+                  "author",
+                  "year",
+                  "genre",
+                  "isRead",
+                  "userId"
+                ],
+                "properties": {
+                  "_id": {
+                    "description": "Book id",
+                    "type": "string",
+                    "example": "681c8cfafbdf51c6d048fedd"
+                  },
+                  "title": {
+                    "description": "Book title",
+                    "type": "string",
+                    "example": "Rich Dad Poor Dad"
+                  },
+                  "author": {
+                    "description": "Book author",
+                    "type": "string",
+                    "example": "Robert Kiosaki"
+                  },
+                  "year": {
+                    "description": "Book year",
+                    "type": "number",
+                    "example": 2000
+                  },
+                  "genre": {
+                    "description": "Book genre",
+                    "type": "string",
+                    "enum": [
+                      "Fiction",
+                      "Non-fiction",
+                      "Mystery",
+                      "Fantasy",
+                      "Science Fiction",
+                      "Biography",
+                      "Romance",
+                      "Historical",
+                      "Thriller",
+                      "Horror",
+                      "Self-help",
+                      "Philosophy",
+                      "Poetry",
+                      "Young Adult",
+                      "Children",
+                      "Graphic Novel",
+                      "Classic",
+                      "Motivation"
+                    ]
+                  },
+                  "isRead": {
+                    "description": "Is book is already read?",
+                    "type": "boolean"
+                  },
+                  "userId": {
+                    "description": "Book userID",
+                    "type": "string",
+                    "example": "65e4decdd286b30065d54af9"
+                  },
+                  "photo": {
+                    "description": "Book photo",
+                    "type": "string",
+                    "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Creates the book",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "integer",
+                      "example": "Book was successfully created!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/book"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          }
+        }
+      }
+    },
+    "/books/{id}": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "summary": "Get book by id",
+        "operationId": "getBook",
+        "description": "Get book by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "65ca67e7ae7f10c88b598384"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get book by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "integer",
+                      "example": "Successfully found book with 65ca67e7ae7f10c88b598384 ID!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/book"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "book": {
+        "type": "object",
+        "required": [
+          "_id",
+          "title",
+          "author",
+          "year",
+          "genre",
+          "isRead"
+        ],
+        "properties": {
+          "_id": {
+            "description": "Book id",
+            "type": "string",
+            "example": "681c8cfafbdf51c6d048fedd"
+          },
+          "title": {
+            "description": "Book title",
+            "type": "string",
+            "example": "Rich Dad Poor Dad"
+          },
+          "author": {
+            "description": "Book author",
+            "type": "string",
+            "example": "Robert Kiosaki"
+          },
+          "year": {
+            "description": "Book year",
+            "type": "number",
+            "example": 2000
+          },
+          "genre": {
+            "description": "Book genre",
+            "type": "string",
+            "enum": [
+              "Fiction",
+              "Non-fiction",
+              "Mystery",
+              "Fantasy",
+              "Science Fiction",
+              "Biography",
+              "Romance",
+              "Historical",
+              "Thriller",
+              "Horror",
+              "Self-help",
+              "Philosophy",
+              "Poetry",
+              "Young Adult",
+              "Children",
+              "Graphic Novel",
+              "Classic",
+              "Motivation"
+            ]
+          },
+          "isRead": {
+            "description": "Is book is already read?",
+            "type": "boolean"
+          },
+          "userId": {
+            "description": "Book userID",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
+          "photo": {
+            "description": "Book photo",
+            "type": "string",
+            "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
+          }
+        }
+      }
+    },
+    "responses": {
+      "401": {
+        "description": "Unauthorized error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "UnauthorizedError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Access token expired"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

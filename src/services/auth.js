@@ -6,6 +6,12 @@ import fs from 'node:fs/promises';
 //* Constants
 import { FIFTEEN_MINUTES, ONE_DAY, TEMPLATES_DIR } from '../constants/index.js';
 
+//* Utils
+import {
+  getFullNameFromGoogleTokenPayload,
+  validateCode,
+} from '../utils/googleOAuthClient.js';
+
 //* Mongoose
 import { UserCollection } from '../db/models/user.js';
 import { SessionCollection } from '../db/models/session.js';
@@ -169,4 +175,32 @@ export const resetPassword = async (payload) => {
     { _id: user._id },
     { password: encryptedUserPassword },
   );
+};
+
+export const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+  const fullName = getFullNameFromGoogleTokenPayload(payload);
+
+  let user = await UserCollection.findOne({
+    email: payload.email,
+  });
+
+  if (!user) {
+    const hashedPassword = await bcrypt.hash(randomBytes(10), 10);
+    user = await UserCollection.create({
+      email: payload.email,
+      name: fullName,
+      password: hashedPassword,
+      role: 'user',
+    });
+  }
+
+  console.log(user);
+
+  const newSession = createSession();
+  return await SessionCollection.create({
+    userId: user._id,
+    ...newSession,
+  });
 };

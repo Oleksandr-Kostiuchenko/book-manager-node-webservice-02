@@ -8,6 +8,7 @@ import {
   loginUserSchema,
   requestResetEmailSchema,
   resetPasswordSchema,
+  validateConfirmOAuthSchema,
 } from '../validation/auth.js';
 
 //* Controllers
@@ -18,6 +19,8 @@ import {
   refreshUserSessionController,
   requestResetEmailController,
   resetPasswordController,
+  getOauthUrlController,
+  confirmOAuthController,
 } from '../controllers/authControllers.js';
 
 //* Middlewares
@@ -38,6 +41,16 @@ router.post(
   '/login',
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
+);
+
+//* GET GOOGLE AUTH URL
+router.post('/get-oauth-url', ctrlWrapper(getOauthUrlController));
+
+//* CONFIRM GOOGLE AUTH URL
+router.post(
+  '/confirm-oauth',
+  validateBody(validateConfirmOAuthSchema),
+  ctrlWrapper(confirmOAuthController),
 );
 
 //* LOGOUT

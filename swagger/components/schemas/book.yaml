@@ -1,0 +1,60 @@
+type: object
+required:
+  - _id
+  - title
+  - author
+  - year
+  - genre
+  - isRead
+properties:
+  _id:
+    description: 'Book id'
+    type: string
+    example: 681c8cfafbdf51c6d048fedd
+  title:
+    description: 'Book title'
+    type: string
+    example: 'Rich Dad Poor Dad'
+  author:
+    description: 'Book author'
+    type: string
+    example: 'Robert Kiosaki'
+  year:
+    description: 'Book year'
+    type: number
+    example: 2000
+  genre:
+    description: 'Book genre'
+    type: string
+    enum:
+      [
+        'Fiction',
+        'Non-fiction',
+        'Mystery',
+        'Fantasy',
+        'Science Fiction',
+        'Biography',
+        'Romance',
+        'Historical',
+        'Thriller',
+        'Horror',
+        'Self-help',
+        'Philosophy',
+        'Poetry',
+        'Young Adult',
+        'Children',
+        'Graphic Novel',
+        'Classic',
+        'Motivation',
+      ]
+  isRead:
+    description: 'Is book is already read?'
+    type: boolean
+  userId:
+    description: 'Book userID'
+    type: string
+    example: 65e4decdd286b30065d54af9
+  photo:
+    description: 'Book photo'
+    type: string
+    example: https://res.cloudinary.com/uqwgdu/image/upload/image.png

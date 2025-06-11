@@ -10,6 +10,7 @@ import { getEnvVar } from './utils/getEnvVar.js';
 //* Middlewares
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 //* Routers
 import router from './routers/index.js';
@@ -42,6 +43,7 @@ export const startServer = () => {
     });
   });
   app.use('/uploads', express.static(UPLOAD_DIR));
+  app.use('/api-docs', swaggerDocs());
 
   // BOOKS + AUTH
   app.use(router);
